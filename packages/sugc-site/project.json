@@ -1,0 +1,73 @@
+{
+  "name": "sugc-site",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sugc-site",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "packages/sugc-site",
+        "outputPath": "dist/packages/sugc-site"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "packages/sugc-site"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "sugc-site:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "sugc-site:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "sugc-site:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "sugc-site:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/sugc-site/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/sugc-site/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f packages/sugc-site/Dockerfile . -t sugc-site"
+    }
+  },
+  "tags": []
+}

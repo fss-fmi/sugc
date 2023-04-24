@@ -1,0 +1,68 @@
+{
+  "name": "sugc-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/sugc-api/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/packages/sugc-api",
+        "main": "packages/sugc-api/src/main.ts",
+        "tsConfig": "packages/sugc-api/tsconfig.app.json",
+        "assets": ["packages/sugc-api/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "packages/sugc-api/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "sugc-api:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "sugc-api:build:development"
+        },
+        "production": {
+          "buildTarget": "sugc-api:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/sugc-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/sugc-api/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f packages/sugc-api/Dockerfile . -t sugc-api"
+    }
+  },
+  "tags": []
+}
